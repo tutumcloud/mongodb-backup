@@ -21,6 +21,7 @@ BACKUP_CMD="mongodump --out /backup/"'$(date +\%Y.\%m.\%d.\%H\%M\%S)'" --host ${
 
 
 echo "=> Creating backup script"
+rm -f /backup.sh
 cat <<EOF >> /backup.sh
 #!/bin/bash
 MAX_BACKUPS=${MAX_BACKUPS}
@@ -38,6 +39,16 @@ ${BACKUP_CMD}
 echo "=> Backup done"
 EOF
 chmod +x /backup.sh
+
+echo "=> Creating restore script"
+rm -f /restore.sh
+cat <<EOF >> /restore.sh
+#!/bin/bash
+echo "=> Restore database from \$1"
+mongorestore --host ${MONGODB_HOST} --port ${MONGODB_PORT} ${USER_STR}${PASS_STR} \$1
+echo "=> Done"
+EOF
+chmod +x /restore.sh
 
 echo "${CRON_TIME} /backup.sh >> /mongo_backup.log 2>&1" > /crontab.conf
 echo "=> Adding cron job"

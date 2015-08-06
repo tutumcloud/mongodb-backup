@@ -27,3 +27,13 @@ Moreover, if you link `tutum/mongodb-backup` to a mongodb container(e.g. `tutum/
     EXTRA_OPTS      the extra options to pass to mongodump command
     CRON_TIME       the interval of cron job to run mongodump. `0 0 * * *` by default, which is every day at 00:00
     MAX_BACKUPS     the number of backups to keep. When reaching the limit, the old backup will be discarded. No limit, by default
+
+## Restore from a backup
+
+See the list of backups, you can run:
+
+    docker exec tutum-backup ls /backup
+
+To restore database from a certain backup, simply run:
+
+    docker exec tutum-backup /restore.sh /backup/2015.08.06.171901
