@@ -25,4 +25,5 @@ Moreover, if you link `tutum/mongodb-backup` to a mongodb container(e.g. `tutum/
     MONGODB_PASS    the password of your mongodb database
     MONGODB_DB      the database name to dump. If not specified, it will dump all the databases
     EXTRA_OPTS      the extra options to pass to mongodump command
-    CRON_TIME       the interval of cron job to run mongodump. "0 0 * * *" by default, which is every day at 00:00
+    CRON_TIME       the interval of cron job to run mongodump. `0 0 * * *` by default, which is every day at 00:00
+    MAX_BACKUPS     the number of backups to keep. When reaching the limit, the old backup will be discarded. No limit, by default
