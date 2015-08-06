@@ -26,7 +26,7 @@ cat <<EOF >> /backup.sh
 #!/bin/bash
 MAX_BACKUPS=${MAX_BACKUPS}
 
-echo "=> Starting backup"
+echo "=> Backup started"
 if [ -n "\${MAX_BACKUPS}" ]; then
     while [ \$(ls /backup -N1 | wc -l) -ge \${MAX_BACKUPS} ];
     do
@@ -50,11 +50,16 @@ echo "=> Done"
 EOF
 chmod +x /restore.sh
 
-echo "${CRON_TIME} /backup.sh >> /mongo_backup.log 2>&1" > /crontab.conf
-echo "=> Adding cron job"
-crontab  /crontab.conf
-crontab -l
 touch /mongo_backup.log
 tail -F /mongo_backup.log &
+
+if [ -n "${INIT_BACKUP}" ]; then
+    echo "=> Create a backup on start the container"
+    /backup.sh
+fi
+
+echo "${CRON_TIME} /backup.sh >> /mongo_backup.log 2>&1" > /crontab.conf
+crontab  /crontab.conf
+crontab -l
 echo "=> Running cron job"
 exec cron -f
