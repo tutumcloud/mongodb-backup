@@ -59,6 +59,17 @@ chmod +x /restore.sh
 touch /mongo_backup.log
 tail -F /mongo_backup.log &
 
+if [ -n "${INIT_RESTORE}" ]; then
+    echo "=> Restore on the startup"
+    echo "TEST"
+    echo $(ls backup/ -1 | sort -r | head -1)
+    latest_backup=$(ls backup/ -1 | sort -r | head -1)
+    if [ -n "$latest_backup" ]; then
+        echo $latest_backup
+        /restore.sh /backup/$latest_backup/${MONGODB_DB}
+    fi
+fi
+
 if [ -n "${INIT_BACKUP}" ]; then
     echo "=> Create a backup on the startup"
     /backup.sh
