@@ -61,10 +61,8 @@ tail -F /mongo_backup.log &
 
 if [ -n "${INIT_RESTORE}" ]; then
     echo "=> Restore on the startup"
-    echo $(ls backup/ -1 | sort -r | head -1)
-    latest_backup=$(ls backup/ -1 | sort -r | head -1)
+    latest_backup=$(ls /backup/ -1 | sort -r | head -1)
     if [ -n "$latest_backup" ]; then
-        echo $latest_backup
         /restore.sh /backup/$latest_backup/${MONGODB_DB}
     fi
 fi
