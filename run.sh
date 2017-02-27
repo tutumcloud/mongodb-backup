@@ -47,7 +47,7 @@ rm -f /restore.sh
 cat <<EOF >> /restore.sh
 #!/bin/bash
 echo "=> Restore database from \$1"
-if mongorestore --host ${MONGODB_HOST} --port ${MONGODB_PORT} ${USER_STR}${PASS_STR} \$1; then
+if mongorestore --host ${MONGODB_HOST} --port ${MONGODB_PORT} ${USER_STR}${PASS_STR}${DB_STR} \$1; then
     echo "   Restore succeeded"
 else
     echo "   Restore failed"
@@ -58,6 +58,14 @@ chmod +x /restore.sh
 
 touch /mongo_backup.log
 tail -F /mongo_backup.log &
+
+if [ -n "${INIT_RESTORE}" ]; then
+    echo "=> Restore on the startup"
+    latest_backup=$(ls /backup/ -1 | sort -r | head -1)
+    if [ -n "$latest_backup" ]; then
+        /restore.sh /backup/$latest_backup/${MONGODB_DB}
+    fi
+fi
 
 if [ -n "${INIT_BACKUP}" ]; then
     echo "=> Create a backup on the startup"
